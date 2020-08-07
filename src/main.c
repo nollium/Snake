@@ -12,6 +12,10 @@
 
 #include "main.h"
 
+/*
+** THIS IS HOW YOU DRAW INSIDE AN MLX IMAGE 
+*/
+
 void    my_pixel_put(t_data *data, int x, int y, int color)
 {
 	char    *dst;
@@ -22,44 +26,31 @@ void    my_pixel_put(t_data *data, int x, int y, int color)
 	*(unsigned int *)dst = color;
 }
 
-void    init_data(t_data *data, void *mlx, int w, int h)
-{
-	data->mlx_img = mlx_new_image(mlx, w, h);
-	data->addr = mlx_get_data_addr(data->mlx_img, &(data->bits_per_pixel),
-								 &(data->line_length), &(data->endian));
-	data->width = w;
-	data->height = h;
-}
-
-#include <stdio.h>
-#include <unistd.h>
+/*
+** YOU SHOULD ALWAYS SWITCH BETWEEN TWO IMAGE BUFFERS TO PREVENT TEARING
+** (DOUBLE BUFFERING) 
+*/
 
 int		loop_handler(t_game *game)
 {
 	static clock_t	t0 = 0;
-	clock_t			t1;
 
-	(void)game;
-	while (1)
+	if ((double)(clock() - t0) > (double)CLOCKS_PER_SEC / (double)FRAME_CAP)
 	{
-		t0 = clock();
-		sleep(1);
-		t1 = clock();
-		printf("DURATION : %f", (double)((double)t1 - t0) / CLOCKS_PER_SEC);
-	}
-	/*
-	if (clock() - t0)
-	{
-		mlx_put_image_to_window(game->mlx, game->win, game->img_ptr->mlx_img, 0, 0);
+		mlx_put_image_to_window(game->mlx, game->win,
+								game->img_ptr->mlx_img, 0, 0);
 		if (game->img_ptr == game->img)
 			game->img_ptr++;
 		else
 			game->img_ptr--;
 		t0 = clock();
 	}
-	sleep(2);*/
 	return (0);
 }
+
+/*
+** FUNCTION TO TEST IF EVERYTHING IS WORKING WELL 
+*/
 
 void	draw_grid(t_data *data, int color)
 {
@@ -80,6 +71,15 @@ void	draw_grid(t_data *data, int color)
 	}
 }
 
+void    init_data(t_data *data, void *mlx, int w, int h)
+{
+	data->mlx_img = mlx_new_image(mlx, w, h);
+	data->addr = mlx_get_data_addr(data->mlx_img, &(data->bits_per_pixel),
+								 &(data->line_length), &(data->endian));
+	data->width = w;
+	data->height = h;
+}
+
 void	init_display(t_game *game)
 {
 	game->mlx = mlx_init();
@@ -92,17 +92,7 @@ void	init_display(t_game *game)
 int		main(void)
 {
 	t_game	game;
-	clock_t t0;
-	clock_t t1;
-	char	c;
 
-	while (1)
-	{
-		t0 = clock();
-		read(0, &c, 1);
-		t1 = clock();
-		printf("DURATION : %f seconds\n", (double)((double)t1 - (double)t0) / (double)CLOCKS_PER_SEC);
-	}
 	init_display(&game);
 	draw_grid(game.img, 0xFF0000);
 	draw_grid(game.img + 1, 0xFF);

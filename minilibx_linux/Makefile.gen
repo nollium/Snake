@@ -15,7 +15,7 @@ DOCP=do_cp
 
 
 
-CC	= clang-9
+CC	= gcc
 
 NAME	= libmlx.a
 

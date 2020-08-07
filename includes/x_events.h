@@ -45,7 +45,7 @@
 # define OWNER_GRAB_BUTTON_MASK		16777216L
 
 /*
-** Event names.  Used in "type" field in XEvent structures.  Not to be
+**  Event names.  Used in "type" field in XEvent structures.  Not to be
 **	confused with event masks above.  They start from 2 because 0 and 1
 **	are reserved in the protocol for errors and replies.
 */

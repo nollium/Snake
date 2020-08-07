@@ -10,9 +10,13 @@
 #                                                                              #
 # **************************************************************************** #
 
-NAME = executable
+ifeq ($(UNAME),MINGW64_NT-10.0)
+	EXTENSION =.exe
+endif
 
-CC = clang-9
+NAME = executable$(EXTENSION)
+
+CC = gcc
 
 HEADERS_PATH = ./includes/
 
@@ -60,14 +64,13 @@ ifeq ($(UNAME),Linux)
 endif
 
 ifeq ($(UNAME),MINGW64_NT-10.0)
-	NAME +=.exe
 	MLX_PATH = $(MLX_WINDOWS_PATH)
 	MLX_NAME = libmlx.a
 	MLX_LIB = $(MLX_PATH)/$(MLX_NAME)
 	LINKS = -L"$(MLX_PATH)/SDL/lib" -lmingw32 -lSDL2main -lSDL2 -lSDL2_image \
 	-lSDL2_mixer -lSDL2_ttf  -lmingw32 -lSDL2main -luser32 -lgdi32 -lwinmm -ldxguid
 	INCLUDES += -I$(MLX_WINDOWS_PATH)/includes
-	LOAD_DYLIB = cp $(MLX_PATH)/*.dll ../
+	LOAD_DYLIB = cp $(MLX_PATH)/*.dll ./
 endif
 
 SRC = $(addprefix $(DIRSRC)/, main.c)

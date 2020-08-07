@@ -13,16 +13,42 @@
 #ifndef MAIN_H
 # define MAIN_H
 
+/*
+** MLX HEADER
+*/
+
 # include "mlx.h"
+
+/*
+** X EVENTS ARE REWRITTEN ACCORDINGLY TO 42'S NORM IN THIS FILE
+*/
+
 # include "x_events.h"
+
+/*
+** IMPORTANT KEYBOARD KEYCODES FOR LINUX, OSX AND WINDOWS (MINGW)
+** ARE REWRITTEN IN THIS FILE
+*/
+
 # include "keycodes.h"
+
 # include <time.h>
+# include <stdio.h>
+# include <unistd.h>
 
 # define W_WIDTH	800
 # define W_HEIGHT	800
 # define W_TITLE	"window title"
 
+/*
+** MAX FRAMES PER SECOND 
+*/
+
 # define FRAME_CAP	1
+
+/*
+** STRUCT STORING ALL INFORMATION REQUIRED TO USE A MLX IMAGE 
+*/
 
 typedef struct	s_data
 {
@@ -34,6 +60,11 @@ typedef struct	s_data
 	int			height;
 	int			width;
 }				t_data;
+
+/*
+** MLX HOOKS ONLY TAKE ONE ARGUMENT SO YOU SHOULD STORE EVERYTHING YOU NEED
+** IN A STRUCT 
+*/
 
 typedef struct	s_game
 {
