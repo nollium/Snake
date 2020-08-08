@@ -35,6 +35,8 @@
 # include <time.h>
 # include <stdio.h>
 # include <unistd.h>
+# include <stdlib.h>
+# include <pthread.h>
 
 # define W_WIDTH	800
 # define W_HEIGHT	800
@@ -44,7 +46,9 @@
 ** MAX FRAMES PER SECOND 
 */
 
-# define FRAME_CAP	1
+# define FRAME_CAP	0
+
+# define CELL_SIZE 12
 
 /*
 ** STRUCT STORING ALL INFORMATION REQUIRED TO USE A MLX IMAGE 
@@ -72,6 +76,7 @@ typedef struct	s_game
 	void		*win;
 	t_data  	img[2];
 	t_data  	*img_ptr;
+	int			frame_ready;
 }				t_game;
 
 #endif
