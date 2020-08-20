@@ -12,73 +12,6 @@
 
 #include "main.h"
 
-/*
-** THIS IS HOW YOU DRAW INSIDE AN MLX IMAGE 
-*/
-
-void    my_pixel_put(t_data *data, int x, int y, int color)
-{
-	char    *dst;
-
-	if (x <= 0 || x >= data->width || y <= 0 || y >= data->height)
-		return ;
-	dst = data->addr + (y * data->line_length + x * data->bits_per_pixel / 8);
-	*(unsigned int *)dst = color;
-}
-
-/*
-** FUNCTION TO TEST IF EVERYTHING IS WORKING WELL 
-*/
-
-void	draw_grid(t_data *data, int color)
-{
-	int	x;
-	int	y;
-	
-	y = 0;
-	while (y < data->height)
-	{
-		x = -1;
-		while (++x < data->width)
-		{
-			my_pixel_put(data, x, y, color);
-			my_pixel_put(data, y, x, color);
-		}
-		y += CELL_SIZE;
-	}
-}
-
-void	fill_cell(t_data *data, int x, int y, int color)
-{
-	int	start_x;
-	int	start_y;
-	
-	x *= CELL_SIZE;
-	y *= CELL_SIZE;
-	start_x = x;
-	start_y = y;
-	while (y < start_y + CELL_SIZE)
-	{
-		while (x < start_x + CELL_SIZE)
-		{
-			my_pixel_put(data, x, y, color);
-			x++;
-		}
-		y++;
-		x = start_x;
-	}
-}
-
-void	copy_image(t_data *src, t_data *dst)
-{
-	int	i;
-
-	i = -1;
-	while (++i < dst->width * dst->height * dst->bits_per_pixel / 8
-			&& i < src->width * src->height * src->bits_per_pixel / 8)
-		(dst->addr)[i] = (src->addr)[i];
-}
-
 int	get_random_int()
 {
 	srand(clock());
@@ -163,25 +96,6 @@ int		loop_handler(t_game *game)
 	}
 	refresh(game);
 	return (0);
-}
-
-void    init_data(t_data *data, void *mlx, int w, int h)
-{
-	data->mlx_img = mlx_new_image(mlx, w, h);
-	data->addr = mlx_get_data_addr(data->mlx_img, &(data->bits_per_pixel),
-								 &(data->line_length), &(data->endian));
-	data->width = w;
-	data->height = h;
-}
-
-void	init_display(t_game *game)
-{
-	game->mlx = mlx_init();
-	game->win = mlx_new_window(game->mlx, W_WIDTH, W_HEIGHT, W_TITLE);
-	game->img_ptr = game->img;
-	init_data(game->img, game->mlx, W_WIDTH, W_HEIGHT);
-	init_data(game->img + 1, game->mlx, W_WIDTH, W_HEIGHT);
-	game->frame_ready = 0;
 }
 
 void	clean_all(t_game *game)

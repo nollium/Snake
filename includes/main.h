@@ -31,12 +31,16 @@
 */
 
 # include "keycodes.h"
+# include "structs.h"
+# include "frontend.h"
+# include "init.h"
 
 # include <time.h>
 # include <stdio.h>
 # include <unistd.h>
 # include <stdlib.h>
 # include <pthread.h>
+
 
 # define W_WIDTH	800
 # define W_HEIGHT	800
@@ -47,36 +51,5 @@
 */
 
 # define FRAME_CAP	0
-
-# define CELL_SIZE 12
-
-/*
-** STRUCT STORING ALL INFORMATION REQUIRED TO USE A MLX IMAGE 
-*/
-
-typedef struct	s_data
-{
-	void		*mlx_img;
-	char		*addr;
-	int			bits_per_pixel;
-	int			line_length;
-	int			endian;
-	int			height;
-	int			width;
-}				t_data;
-
-/*
-** MLX HOOKS ONLY TAKE ONE ARGUMENT SO YOU SHOULD STORE EVERYTHING YOU NEED
-** IN A STRUCT 
-*/
-
-typedef struct	s_game
-{
-	void		*mlx;
-	void		*win;
-	t_data  	img[2];
-	t_data  	*img_ptr;
-	int			frame_ready;
-}				t_game;
 
 #endif

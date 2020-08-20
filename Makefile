@@ -73,7 +73,7 @@ ifeq ($(UNAME),MINGW64_NT-10.0)
 	LOAD_DYLIB = cp $(MLX_PATH)/*.dll ./
 endif
 
-SRC = $(addprefix $(DIRSRC)/, main.c)
+SRC = $(addprefix $(DIRSRC)/, main.c init.c frontend.c)
 
 OBJDIR = obj
 
@@ -81,7 +81,7 @@ OBJ = $(SRC:$(DIRSRC)/%.c= $(OBJDIR)/%.o)
 
 OBJ_PATHS = $(shell find $(DIRSRC) | grep / | sed 's/://g' | sed 's/src/$(OBJDIR)/g')
 
-HEADERS = $(addprefix $(HEADERS_PATH), main.h)
+HEADERS = $(addprefix $(HEADERS_PATH), main.h keycodes.h structs.h x_events.h frontend.h)
 
 OBJBONUS = $(SRCBONUS:.c=.o)
 
