@@ -46,7 +46,7 @@
 
 # define W_WIDTH	800
 # define W_HEIGHT	800
-# define W_TITLE	"window title"
+# define W_TITLE	"SNAKE"
 
 # define BG_COLOR	0
 # define FLOOR(x, y) (x < y) ? y : x
@@ -58,6 +58,6 @@
 ** MAX FRAMES PER SECOND 
 */
 
-# define FRAME_CAP	60
+# define FRAME_CAP	30
 
 #endif

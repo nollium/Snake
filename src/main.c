@@ -109,7 +109,7 @@ void	update_cells(t_snake *snake, t_data *screen)
 			snake->food_x = abs(rand()) % GRID_WIDTH;
 			snake->food_y = abs(rand()) % GRID_HEIGHT;
 		}	
-		fill_cell(screen, snake->food_x, snake->food_y, snake->food_color = FLOOR(abs(get_random_int()) % 0xFFFFFF, 0x222222));
+		fill_cell(screen, snake->food_x, snake->food_y, snake->food_color = (abs(get_random_int()) % 0xFFFFFF) | 0x050505);
 		printf("x%d y%d c 0x%x\n", snake->food_x, snake->food_y, snake->food_color);
 		//return ;
 	}
@@ -207,7 +207,7 @@ int		main(void)
 
 	game.snake.food_x = abs(get_random_int()) % GRID_WIDTH + 1;
 	game.snake.food_y = abs(get_random_int()) % GRID_HEIGHT + 1;
-	fill_cell(game.img_ptr, game.snake.food_x, game.snake.food_y, game.snake.food_color = abs(get_random_int()) % 0xFFFFFF);
+	fill_cell(game.img_ptr, game.snake.food_x, game.snake.food_y, game.snake.food_color = (abs(get_random_int()) % 0xFFFFFF) | 0x050505);
 	mlx_loop_hook(game.mlx, loop_handler, (void *)&game);
 	mlx_hook(game.win, KEY_PRESS, KEY_PRESS_MASK, key_press_hook, game.keys);
 	mlx_hook(game.win, KEY_RELEASE, KEY_RELEASE_MASK, key_release_hook, game.keys);

@@ -6,7 +6,7 @@
 /*   By: smaccary <smaccary@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/08/21 00:52:46 by smaccary          #+#    #+#             */
-/*   Updated: 2020/08/22 18:45:57 by smaccary         ###   ########.fr       */
+/*   Updated: 2020/08/22 21:50:19 by smaccary         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,6 @@ void    init_snake(t_snake *snake)
 	snake->dir_x = 1;
 	snake->dir_y = 0;
 	snake->cells_list = ft_lstnew(new_cell(snake->x, snake->y, CELL_COLOR));
-	snake->cells_list->next = ft_lstnew(new_cell(snake->x - snake->dir_x, snake->y - snake->dir_y, 0xFF));
+	//snake->cells_list->next = ft_lstnew(new_cell(snake->x - snake->dir_x, snake->y - snake->dir_y, 0xFF));
 	snake->size = ft_lstsize(snake->cells_list);
 }
