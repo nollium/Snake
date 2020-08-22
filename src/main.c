@@ -200,8 +200,8 @@ int		main(void)
 	t_game	game;
 	
 	init_display(&game);
-	draw_grid(game.img, 0xFF0000);
-	draw_grid(game.img + 1, 0xFF);
+	//draw_grid(game.img, 0xFF0000);
+	//draw_grid(game.img + 1, 0xFF);
 	init_snake(&game.snake);
 	init_keys(game.keys);
 
