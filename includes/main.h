@@ -34,6 +34,7 @@
 # include "structs.h"
 # include "frontend.h"
 # include "init.h"
+# include "keys.h"
 
 # include <time.h>
 # include <stdio.h>
@@ -46,10 +47,13 @@
 # define W_HEIGHT	800
 # define W_TITLE	"window title"
 
+# define BG_COLOR	0
+# define CELL_COLOR 0xFFFFFF
+
 /*
 ** MAX FRAMES PER SECOND 
 */
 
-# define FRAME_CAP	0
+# define FRAME_CAP	10
 
 #endif

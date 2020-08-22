@@ -12,6 +12,19 @@
 
 #include "main.h"
 
+void	clean_all(t_game *game)
+{
+	mlx_destroy_window(game->mlx, game->win);
+	mlx_destroy_image(game->mlx, game->img->mlx_img);
+	mlx_destroy_image(game->mlx, game->img[1].mlx_img);
+}
+
+int		leave(t_game *game)
+{
+	clean_all(game);
+	exit(0);
+}
+
 int	get_random_int()
 {
 	srand(clock());
@@ -82,39 +95,71 @@ void	*refresh(t_game *game)
 	return (NULL);
 }
 
+void	update_snake(t_snake *snake, t_data *screen)
+{
+	t_list	*last;
+	t_cell	*cell;
+
+	if (snake->size >= 2)
+	{
+		last = ft_lstlast(snake->cells_list);
+		last->next = snake->cells_list;
+		snake->cells_list = last;
+	}
+	cell = snake->cells_list->content;
+	fill_cell(screen, cell->x, cell->y, 0);
+	snake->x += snake->dir_x;
+	snake->y += snake->dir_y;
+	cell->x = snake->x;
+	cell->y = snake->y;
+	fill_cell(screen, cell->x, cell->y, cell->color);
+	//printf("x%d y%d dx %d dy %d\n",cell->x, cell->y, snake->dir_x, snake->dir_y);
+}
+
+void	inputs_handler(t_game *game, t_key keys[K_BUFF_SIZE])
+{
+	t_snake	*snake;
+
+	snake = &(game->snake);
+	if (key_chr(keys, ESC_KEY, K_BUFF_SIZE))
+		leave(game);
+	if (!(snake->dir_y))
+	{
+		if (key_chr(keys, ARROW_UP_KEY, K_BUFF_SIZE))
+		{
+			snake->dir_y = -1;
+			snake->dir_x = 0;
+		}
+		if (key_chr(keys, ARROW_DOWN_KEY, K_BUFF_SIZE))
+		{
+			snake->dir_y = 1;
+			snake->dir_x = 0;
+		}
+	}
+	if (!(snake->dir_x))
+	{
+		if (key_chr(keys, ARROW_LEFT_KEY, K_BUFF_SIZE))
+		{
+			snake->dir_y = 0;
+			snake->dir_x = -1;
+		}
+		if (key_chr(keys, ARROW_RIGHT_KEY, K_BUFF_SIZE))
+		{
+			snake->dir_y = 0;
+			snake->dir_x = 1;
+		}
+	}
+}
+
 int		loop_handler(t_game *game)
 {
-	pthread_t		threads[3];
-
+	inputs_handler(game, game->keys);
 	if (!game->frame_ready)
 	{
-		pthread_create(threads, NULL, (void *(*)(void *))fill_next_cell_rcolor, game);
-		pthread_create(threads + 1, NULL, (void *(*)(void *))fill_next_cell_rcolor_r, game);
-		pthread_join(threads[0], NULL);
-		pthread_join(threads[1], NULL);
+		update_snake(&(game->snake), game->img_ptr);
 		game->frame_ready = 1;
 	}
 	refresh(game);
-	return (0);
-}
-
-void	clean_all(t_game *game)
-{
-	mlx_destroy_window(game->mlx, game->win);
-	mlx_destroy_image(game->mlx, game->img->mlx_img);
-	mlx_destroy_image(game->mlx, game->img[1].mlx_img);
-}
-
-int		leave(t_game *game)
-{
-	clean_all(game);
-	exit(0);
-}
-
-int		key_handler(int keycode, t_game *game)
-{
-	if (keycode == ESC_KEY)
-		leave(game);
 	return (0);
 }
 
@@ -125,8 +170,11 @@ int		main(void)
 	init_display(&game);
 	draw_grid(game.img, 0xFF0000);
 	draw_grid(game.img + 1, 0xFF);
+	init_snake(&game.snake);
+	init_keys(game.keys);
 	mlx_loop_hook(game.mlx, loop_handler, (void *)&game);
-	mlx_key_hook(game.win, key_handler, &game);
+	mlx_hook(game.win, KEY_PRESS, KEY_PRESS_MASK, key_press_hook, game.keys);
+	mlx_hook(game.win, KEY_RELEASE, KEY_RELEASE_MASK, key_release_hook, game.keys);
 	mlx_hook(game.win, DESTROY_NOTIFY, STRUCTURE_NOTIFY_MASK, leave, &game);
 	mlx_loop(game.mlx);
 	return (0);
