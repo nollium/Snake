@@ -14,7 +14,7 @@ ifeq ($(UNAME),MINGW64_NT-10.0)
 	EXTENSION =.exe
 endif
 
-NAME = executable$(EXTENSION)
+NAME = snake$(EXTENSION)
 
 CC = gcc
 
@@ -70,6 +70,7 @@ ifeq ($(UNAME),MINGW64_NT-10.0)
 	LINKS = -L"$(MLX_PATH)/SDL/lib" -lmingw32 -lSDL2main -lSDL2 -lSDL2_image \
 	-lSDL2_mixer -lSDL2_ttf  -lmingw32 -lSDL2main -luser32 -lgdi32 -lwinmm -ldxguid
 	INCLUDES += -I$(MLX_WINDOWS_PATH)/includes
+	WINDOWS_ARGS = -Wl,-subsystem,windows
 	LOAD_DYLIB = cp $(MLX_PATH)/*.dll ./
 endif
 
@@ -121,6 +122,8 @@ lilclean:
 
 re: fclean all	
 
+release: release_arg $(NAME)
+
 .PHONY: clean fclean
 
 opti:
@@ -130,6 +133,9 @@ opti:
 debug:
 	$(eval CFLAGS += -fsanitize=address)
 	$(eval LIB_ARG += debug)
+
+release_arg: opti
+	$(eval CFLAGS += $(WINDOWS_ARGS))
 
 QWERTY:
 	$(eval CFLAGS += -D QWERTY=1)
