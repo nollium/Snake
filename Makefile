@@ -73,7 +73,7 @@ ifeq ($(UNAME),MINGW64_NT-10.0)
 	LOAD_DYLIB = cp $(MLX_PATH)/*.dll ./
 endif
 
-SRC = $(addprefix $(DIRSRC)/, main.c init.c frontend.c keys.c)
+SRC = $(addprefix $(DIRSRC)/, main.c init.c frontend.c keys.c snake.c)
 
 OBJDIR = obj
 

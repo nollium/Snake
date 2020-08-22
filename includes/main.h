@@ -35,6 +35,7 @@
 # include "frontend.h"
 # include "init.h"
 # include "keys.h"
+# include "snake.h"
 
 # include <time.h>
 # include <stdio.h>
@@ -48,12 +49,15 @@
 # define W_TITLE	"window title"
 
 # define BG_COLOR	0
-# define CELL_COLOR 0xFFFFFF
+# define FLOOR(x, y) (x < y) ? y : x
+
+# define GRID_WIDTH W_WIDTH / CELL_SIZE
+# define GRID_HEIGHT W_HEIGHT / CELL_SIZE
 
 /*
 ** MAX FRAMES PER SECOND 
 */
 
-# define FRAME_CAP	10
+# define FRAME_CAP	60
 
 #endif

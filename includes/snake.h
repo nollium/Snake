@@ -1,27 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   frontend.h                                         :+:      :+:    :+:   */
+/*   snake.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: smaccary <smaccary@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/08/21 00:50:27 by smaccary          #+#    #+#             */
-/*   Updated: 2020/08/21 00:50:27 by smaccary         ###   ########.fr       */
+/*   Created: 2020/08/22 18:30:52 by smaccary          #+#    #+#             */
+/*   Updated: 2020/08/22 18:30:52 by smaccary         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef FRONTEND_H
-# define FRONTEND_H
+#ifndef SNAKE_H
+# define SNAKE_H
 
 # include "structs.h"
 
-# define CELL_SIZE 20
-# define CELL_COLOR 0xFFFFFF
-
-
-void    my_pixel_put(t_data *data, int x, int y, int color);
-void	draw_grid(t_data *data, int color);
-void	fill_cell(t_data *data, int x, int y, int color);
-void	copy_image(t_data *src, t_data *dst);
+t_cell	*new_cell(int x, int y, int color);
 
 #endif

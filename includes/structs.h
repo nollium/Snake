@@ -46,6 +46,9 @@ typedef struct  s_snake
 	int			dir_x;
 	int			dir_y;
 	int			size;
+	int			food_x;
+	int			food_y;
+	int			food_color;
 }               t_snake;
 
 /*

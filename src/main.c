@@ -36,40 +36,6 @@ int	get_random_int()
 ** (DOUBLE BUFFERING) 
 */
 
-void	*fill_next_cell_rcolor(t_game *game)
-{
-	static int		x = 0;
-	static int		y = 0;
-	static int		increment = 1;
-
-	fill_cell(game->img_ptr, x, y, ((unsigned int)get_random_int()) % (unsigned int)0xFFFFFF);
-	x += increment;
-	if (x > W_WIDTH / CELL_SIZE || x < 0)
-	{
-		increment *= -1;
-		x += increment;
-		y++;
-	}
-	return (NULL);
-}
-
-void	*fill_next_cell_rcolor_r(t_game *game)
-{
-	static int		x = (W_WIDTH - 1) / CELL_SIZE;
-	static int		y = (W_HEIGHT - 1) / CELL_SIZE;
-	static int		increment = -1;
-
-	fill_cell(game->img_ptr, x, y, ((unsigned int)get_random_int()) % (unsigned int)0xFFFFFF);
-	x += increment;
-	if (x > W_WIDTH / CELL_SIZE || x < 0)
-	{
-		increment *= -1;
-		x += increment;
-		y--;
-	}
-	return (NULL);
-}
-
 void	*refresh(t_game *game)
 {
 	static clock_t	t0 = 0;
@@ -95,17 +61,83 @@ void	*refresh(t_game *game)
 	return (NULL);
 }
 
-void	update_snake(t_snake *snake, t_data *screen)
+t_cell	*find_cell(t_list *cell_list, int x, int y)
 {
-	t_list	*last;
 	t_cell	*cell;
 
-	if (snake->size >= 2)
+	while (cell_list)
 	{
-		last = ft_lstlast(snake->cells_list);
-		last->next = snake->cells_list;
-		snake->cells_list = last;
+		cell = cell_list->content;
+		if (cell->x == x && cell->y == y)
+			return (cell);
+		cell_list = cell_list->next;
 	}
+	return (NULL);
+}
+
+int		get_pxl_color(t_data *data, int x, int y)
+{
+	char    *dst;
+
+	if (x <= 0 || x >= data->width || y <= 0 || y >= data->height)
+		return 0;
+	dst = data->addr + (y * data->line_length + x * data->bits_per_pixel / 8);
+	return (*(unsigned int *)dst);
+}
+
+int		get_cell_color(t_data *data, int x, int y)
+{
+	return (get_pxl_color(data, (x * CELL_SIZE) + CELL_SIZE / 2, y * CELL_SIZE + CELL_SIZE / 2));
+}
+
+void	update_cells(t_snake *snake, t_data *screen)
+{
+	t_list	*node;
+	t_list	*last;
+	int		new_color;
+
+	if (snake->x == snake->food_x && snake->y == snake->food_y)
+	{
+		snake->size++;
+		new_color = snake->food_color;
+		fill_cell(screen, snake->x, snake->y, new_color);
+		ft_lstadd_front(&snake->cells_list, ft_lstnew(new_cell(snake->x,snake->y, new_color)));
+		snake->food_x = abs(rand()) % GRID_WIDTH;
+		snake->food_y = abs(rand()) % GRID_HEIGHT;
+		while (get_cell_color(screen, snake->food_x, snake->food_y) != BG_COLOR)
+		{
+			snake->food_x = abs(rand()) % GRID_WIDTH;
+			snake->food_y = abs(rand()) % GRID_HEIGHT;
+		}	
+		fill_cell(screen, snake->food_x, snake->food_y, snake->food_color = FLOOR(abs(get_random_int()) % 0xFFFFFF, 0x222222));
+		printf("x%d y%d c 0x%x\n", snake->food_x, snake->food_y, snake->food_color);
+		//return ;
+	}
+	else if ((snake->x + snake->dir_x < 0 || snake->x + snake->dir_x >= GRID_WIDTH
+		|| snake->y + snake->dir_y < 0 || snake->y + snake->dir_y >= GRID_HEIGHT) ||
+		(get_cell_color(screen, snake->x + snake->dir_x, snake->y + snake->dir_y) != BG_COLOR
+		&& (snake->x + snake->dir_x != snake->food_x && snake->y + snake->dir_y != snake->food_y)))
+		exit(0);
+	node = snake->cells_list;
+	while (node && node->next)
+	{
+		if (!(node->next->next))
+		{
+			last = node->next;
+			node->next = NULL;
+			last->next = snake->cells_list;
+			snake->cells_list = last;
+			return ;
+		}
+		node = node->next;
+	}
+}
+
+void	update_snake(t_snake *snake, t_data *screen)
+{
+	t_cell	*cell;
+
+	update_cells(snake, screen);
 	cell = snake->cells_list->content;
 	fill_cell(screen, cell->x, cell->y, 0);
 	snake->x += snake->dir_x;
@@ -136,7 +168,7 @@ void	inputs_handler(t_game *game, t_key keys[K_BUFF_SIZE])
 			snake->dir_x = 0;
 		}
 	}
-	if (!(snake->dir_x))
+	else if (!(snake->dir_x))
 	{
 		if (key_chr(keys, ARROW_LEFT_KEY, K_BUFF_SIZE))
 		{
@@ -153,9 +185,9 @@ void	inputs_handler(t_game *game, t_key keys[K_BUFF_SIZE])
 
 int		loop_handler(t_game *game)
 {
-	inputs_handler(game, game->keys);
 	if (!game->frame_ready)
 	{
+		inputs_handler(game, game->keys);
 		update_snake(&(game->snake), game->img_ptr);
 		game->frame_ready = 1;
 	}
@@ -172,6 +204,10 @@ int		main(void)
 	draw_grid(game.img + 1, 0xFF);
 	init_snake(&game.snake);
 	init_keys(game.keys);
+
+	game.snake.food_x = abs(get_random_int()) % GRID_WIDTH + 1;
+	game.snake.food_y = abs(get_random_int()) % GRID_HEIGHT + 1;
+	fill_cell(game.img_ptr, game.snake.food_x, game.snake.food_y, game.snake.food_color = abs(get_random_int()) % 0xFFFFFF);
 	mlx_loop_hook(game.mlx, loop_handler, (void *)&game);
 	mlx_hook(game.win, KEY_PRESS, KEY_PRESS_MASK, key_press_hook, game.keys);
 	mlx_hook(game.win, KEY_RELEASE, KEY_RELEASE_MASK, key_release_hook, game.keys);
